@@ -2,7 +2,7 @@ from __future__ import annotations
 import copy
 import enum
 import itertools
-from typing import List
+from typing import List, Tuple
 
 class Person(enum.Enum):
     MISSIONARY = 0
@@ -15,8 +15,10 @@ class TravelDirection(enum.Enum):
 class State:
     GOAL_STATE = [[0, 0], [3, 3]]
 
-    def __init__(self, state: State = None) -> None:
+    def __init__(self, state: State = None, prior_action: Tuple = None) -> None:
         self.state = state or [[3, 3], [0, 0]]
+        self.prior_action = prior_action
+        self.parent = None
     
     def __eq__(self, state: State) -> bool:
         return self.state == state.state
@@ -31,7 +33,9 @@ class State:
             if person is not None:
                 new_state[river_side.value][person.value] -= 1
                 new_state[abs(river_side.value - 1)][person.value] += 1
-        return State(new_state)
+        state = State(new_state, prior_action = action)
+        state.parent = self
+        return state
     
     def is_valid_state(self) -> bool:
         no_negative_counts = -1 not in itertools.chain(*self.state)

@@ -1,9 +1,7 @@
+import itertools
 from classes import State
 
 test_state = State()
-
-# for action in test_state.get_possible_actions():
-    # print(action)
 
 def breadth_first_search(state: State) -> State:
     explored, frontier = [], []
@@ -18,4 +16,20 @@ def breadth_first_search(state: State) -> State:
         state = frontier.pop(0)
     return state
 
-print(breadth_first_search(test_state).state)
+end_state = breadth_first_search(test_state)
+list_of_prior_actions, list_of_states = [], []
+if end_state is not None:
+    current_state = end_state
+    while True:
+        list_of_prior_actions.append(current_state.prior_action)
+        list_of_states.append(current_state.state)
+        current_state = current_state.parent
+        if current_state is None:
+            break
+
+x = list(itertools.zip_longest(list_of_prior_actions, list_of_states))
+x.reverse()
+for prior_action, state in x:
+    print('Prior action: ', prior_action)
+    print('State: ', state)
+    print('\n')
