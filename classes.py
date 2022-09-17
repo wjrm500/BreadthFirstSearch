@@ -19,7 +19,7 @@ class State:
     def __init__(self, state: State = None) -> None:
         self.state = state or [[3, 3], [0, 0]]
 
-    def is_goal_state(self) -> None:
+    def is_goal_state(self) -> bool:
         return self.state == self.GOAL_STATE
     
     def next_state(self, action) -> State:
@@ -31,3 +31,8 @@ class State:
         new_state[travel_direction][person] -= 1
         new_state[abs(1 - travel_direction)][person] += 1
         return State(new_state)
+    
+    def is_valid_state(self) -> bool:
+        valid_left_side = self.state[TravelDirection.TO_END][Person.MISSIONARY] >= self.state[TravelDirection.TO_END][Person.CANNIBAL]
+        valid_right_side = self.state[TravelDirection.TO_START][Person.MISSIONARY] >= self.state[TravelDirection.TO_START][Person.CANNIBAL]
+        return valid_left_side and valid_right_side
